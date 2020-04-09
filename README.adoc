@@ -2,7 +2,7 @@
 
 == Background
 
-This guide https://openliberty.io/guides/maven-intro.html[Building a web application with Maven] shows how to build a simple Web Application targed on Liberty. Neo4j-OGM doesn not work in that scenarion, as `mvn liberty:dev` creates a state of Liberty where the application and domain classes end up in `WEB-INF/classes`.
+This guide https://openliberty.io/guides/maven-intro.html[Building a web application with Maven] shows how to build a simple Web Application targed on Liberty. Neo4j-OGM doesn not work in that scenario, as `mvn liberty:dev` creates a state of Liberty where the application and domain classes end up in `WEB-INF/classes`.
 
 This is not a problem per se and also supported https://github.com/classgraph/classgraph[ClassGraph],
 the underlying scanner used to find classes.
@@ -12,7 +12,7 @@ this class path entry twice. ClassGraph skips those duplicates and thus doesn't 
 Packaging the application with `mvn liberty:package -Dinclude=runnable` doesn't show that behaviour.
 
 WARNING: *TL;DR* you must create an independent Jar artifact with your domain classes.
-This examples puts those together with the Spring Data repositories.
+This examples puts those together with the Spring Data repositories. The solution proposed here shows a full blown EAR build. Another possiblities would be a simple JAR dependency containing the relevant `@NodeEntities` and just depend on that.
 
 == Running
 
