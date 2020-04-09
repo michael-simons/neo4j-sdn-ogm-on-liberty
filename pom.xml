@@ -47,8 +47,8 @@
 	</dependencyManagement>
 
 	<modules>
-		<module>jar</module>
-		<module>war</module>
-		<module>ear</module>
+		<module>sdn-on-liberty-domain</module>
+		<module>sdn-on-liberty-api</module>
+		<module>sdn-on-liberty</module>
 	</modules>
 </project>

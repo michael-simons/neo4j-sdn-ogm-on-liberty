@@ -31,5 +31,5 @@ Then access the rest API on your libery like this
 
 [source,shell]
 ----
-curl localhost:9080/sdn-on-liberty/api/movie
+curl localhost:9080/sdn-on-liberty/api/movies
 ----
