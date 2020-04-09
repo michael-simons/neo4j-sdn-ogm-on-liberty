@@ -2,14 +2,13 @@
 
 == Background
 
-It is not possible to run a simple web application with Neo4j-OGM on liberty,
-as the domain classes end up in `WEB-INF/classes`.
+This guide https://openliberty.io/guides/maven-intro.html[Building a web application with Maven] shows how to build a simple Web Application targed on Liberty. Neo4j-OGM doesn not work in that scenarion, as `mvn liberty:dev` creates a state of Liberty where the application and domain classes end up in `WEB-INF/classes`.
 
 This is not a problem per se and also supported https://github.com/classgraph/classgraph[ClassGraph],
 the underlying scanner used to find classes.
 
 However, the https://github.com/OpenLiberty/ci.maven#liberty-maven-plugin[Liberty Maven plugin] and at least IntelliJs deploy to Websphere or Liberty mechanism creates
-this class path entry twice. ClassGraph skips those duplicates.
+this class path entry twice. ClassGraph skips those duplicates and thus doesn't find any Domain Classes.
 
 WARNING: *TL;DR* you must create an independent Jar artifact with your domain classes.
 This examples puts those together with the Spring Data repositories.
