@@ -7,7 +7,7 @@ This guide https://openliberty.io/guides/maven-intro.html[Building a web applica
 This is not a problem per se and also supported https://github.com/classgraph/classgraph[ClassGraph],
 the underlying scanner used to find classes.
 
-However, the `liberty:dev`goal of https://github.com/OpenLiberty/ci.maven#liberty-maven-plugin[Liberty Maven plugin] and at least IntelliJs deploy to Websphere or Liberty mechanism creates
+However, the `liberty:dev` goal of https://github.com/OpenLiberty/ci.maven#liberty-maven-plugin[Liberty Maven plugin] and at least IntelliJs deploy to Websphere or Liberty mechanism creates
 this class path entry twice. ClassGraph skips those duplicates and thus doesn't find any Domain Classes.
 Packaging the application with `mvn liberty:package -Dinclude=runnable` doesn't show that behaviour.
 
