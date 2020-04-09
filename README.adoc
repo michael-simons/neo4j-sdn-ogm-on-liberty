@@ -3,10 +3,10 @@
 This repository contains a couple of examples how to use Spring Data Neo4j with JAX-RS.
 
 The recommended way is to use Spring Boot and it's https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-jersey[JAX-RS and Jersey support].
-You'll find this in the subfolder `sdn-with-spring-boot-and-jax-rs`.
+You'll find this in the subfolder https://github.com/michael-simons/neo4j-sdn-ogm-with-jax-rs/tree/master/sdn-with-spring-boot-and-jax-rs[`sdn-with-spring-boot-and-jax-rs`].
 
 One other way is to deploy things as an EAR to Websphere Liberty.
-You'll find this in `sdn-on-liberty`.
+You'll find this in https://github.com/michael-simons/neo4j-sdn-ogm-with-jax-rs/tree/master/sdn-on-liberty[`sdn-on-liberty`].
 The readme over there explains the reasoning.
 
 == Get yourself a Neo4j docker instance
@@ -30,11 +30,6 @@ public class MovieResource {
 
 	@Inject
 	MovieRepository movieRepository;
-
-	@PostConstruct
-	public void f() {
-		System.out.println("asd");
-	}
 
 	@GET
 	@Path("/")

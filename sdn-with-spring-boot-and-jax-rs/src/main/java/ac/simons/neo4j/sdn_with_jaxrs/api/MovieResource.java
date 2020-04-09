@@ -3,7 +3,6 @@ package ac.simons.neo4j.sdn_with_jaxrs.api;
 import ac.simons.neo4j.sdn_with_jaxrs.domain.Movie;
 import ac.simons.neo4j.sdn_with_jaxrs.domain.MovieRepository;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -18,11 +17,6 @@ public class MovieResource {
 
 	@Inject
 	MovieRepository movieRepository;
-
-	@PostConstruct
-	public void f() {
-		System.out.println("asd");
-	}
 
 	@GET
 	@Path("/")
