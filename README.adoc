@@ -1,35 +1,47 @@
-= Spring Data Neo4j + Neo4j-OGM on Liberty
+= Spring Data Neo4j with JAX-RS
 
-== Background
+This repository contains a couple of examples how to use Spring Data Neo4j with JAX-RS.
 
-This guide https://openliberty.io/guides/maven-intro.html[Building a web application with Maven] shows how to build a simple Web Application targed on Liberty. Neo4j-OGM doesn not work in that scenario, as `mvn liberty:dev` creates a state of Liberty where the application and domain classes end up in `WEB-INF/classes`.
+The recommended way is to use Spring Boot and it's https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-jersey[JAX-RS and Jersey support].
+You'll find this in the subfolder `sdn-with-spring-boot-and-jax-rs`.
 
-This is not a problem per se and also supported https://github.com/classgraph/classgraph[ClassGraph],
-the underlying scanner used to find classes.
+One other way is to deploy things as an EAR to Websphere Liberty.
+You'll find this in `sdn-on-liberty`.
+The readme over there explains the reasoning.
 
-However, the `liberty:dev` goal of https://github.com/OpenLiberty/ci.maven#liberty-maven-plugin[Liberty Maven plugin] and at least IntelliJs deploy to Websphere or Liberty mechanism creates
-this class path entry twice. ClassGraph skips those duplicates and thus doesn't find any Domain Classes.
-Packaging the application with `mvn liberty:package -Dinclude=runnable` doesn't show that behaviour.
-
-WARNING: *TL;DR* you must create an independent Jar artifact with your domain classes.
-This examples puts those together with the Spring Data repositories. The solution proposed here shows a full blown EAR build. Another possiblities would be a simple JAR dependency containing the relevant `@NodeEntities` and just depend on that.
-
-== Running
+== Get yourself a Neo4j docker instance
 
 [source,shell]
 ----
 docker run --publish=7474:7474 --publish=7687:7687 -e 'NEO4J_AUTH=neo4j/secret'  neo4j:4.0.3 // <.>
-mvn clean install <.>
-mvn -pl ac.simons.neo4j:sdn-on-liberty liberty:dev <.>
 ----
 <.> Start a Neo4j database
-<.> Build all modules
-<.> Start the EAR module on a dev server.
 
 Goto the Neo4j browswer and play the first step of the movies graph: http://localhost:7474/browser/?cmd=play&arg=movies[`:play movies`].
-Then access the rest API on your libery like this
 
-[source,shell]
+== API
+
+The API used and exposed is identical in both scenarios:
+
+[source,java]
 ----
-curl localhost:9080/sdn-on-liberty/api/movies
+@Path("movies")
+public class MovieResource {
+
+	@Inject
+	MovieRepository movieRepository;
+
+	@PostConstruct
+	public void f() {
+		System.out.println("asd");
+	}
+
+	@GET
+	@Path("/")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Iterable<Movie> getMovies() {
+
+		return movieRepository.findAll();
+	}
+}
 ----

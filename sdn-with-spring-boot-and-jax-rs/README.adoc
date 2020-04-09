@@ -1,0 +1,14 @@
+= Spring Data Neo4j + Neo4j-OGM on Spring Boot with Jersey (JAX-RS)
+
+Run with
+
+[source,shell]
+----
+./mvnw spring-boot:run
+----
+
+Changes to your domain classes will be loaded automatically.
+
+== Running on OpenShift
+
+https://www.redhat.com/de/resources/spring-boot-microservices-on-openshift-container-platform-reference-architecture
