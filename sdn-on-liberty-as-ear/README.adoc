@@ -1,0 +1,38 @@
+= Spring Data Neo4j + Neo4j-OGM on Liberty (EAR Deployment)
+
+== Background
+
+NOTE: This applies only to Neo4j-OGM prior to 3.2.11 respectively to Neo4j-OGM with a https://github.com/classgraph/classgraph[ClassGraph] version prior to 4.8.69.
+      See this https://github.com/classgraph/classgraph/issues/414[ticket].
+
+This guide https://openliberty.io/guides/maven-intro.html[Building a web application with Maven] shows how to build a simple Web Application targed on Liberty. Neo4j-OGM doesn not work in that scenario, as `mvn liberty:dev` creates a state of Liberty where the application and domain classes end up in `WEB-INF/classes`.
+
+This is not a problem per se and also supported https://github.com/classgraph/classgraph[ClassGraph],
+the underlying scanner used to find classes.
+
+However, the `liberty:dev` goal of https://github.com/OpenLiberty/ci.maven#liberty-maven-plugin[Liberty Maven plugin] and at least IntelliJs deploy to Websphere or Liberty mechanism creates
+this class path entry twice. ClassGraph skips those duplicates and thus doesn't find any Domain Classes.
+Packaging the application with `mvn liberty:package -Dinclude=runnable` doesn't show that behaviour.
+
+WARNING: *TL;DR* you must create an independent Jar artifact with your domain classes.
+This examples puts those together with the Spring Data repositories. The solution proposed here shows a full blown EAR build. Another possiblities would be a simple JAR dependency containing the relevant `@NodeEntities` and just depend on that.
+
+== Running
+
+[source,shell]
+----
+docker run --publish=7474:7474 --publish=7687:7687 -e 'NEO4J_AUTH=neo4j/secret'  neo4j:4.0.3 // <.>
+mvn clean install <.>
+mvn -pl ac.simons.neo4j:sdn-on-liberty liberty:dev <.>
+----
+<.> Start a Neo4j database
+<.> Build all modules
+<.> Start the EAR module on a dev server.
+
+Goto the Neo4j browser and play the first step of the movies graph: http://localhost:7474/browser/?cmd=play&arg=movies[`:play movies`].
+Then access the rest API on your liberty like this
+
+[source,shell]
+----
+curl localhost:9080/sdn-on-liberty/api/movies
+----

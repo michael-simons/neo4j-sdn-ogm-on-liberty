@@ -1,33 +1,61 @@
-= Spring Data Neo4j + Neo4j-OGM on Liberty
+= Spring Data Neo4j + Neo4j-OGM on Liberty (Simple Deployment)
 
-== Background
+NOTE: Please see have a close look at the https://github.com/michael-simons/neo4j-sdn-ogm-with-jax-rs/blob/master/sdn-on-liberty/pom.xml#L40-L55[dependency management tag of the `pom.xml`]. 
+      It shows the *correct* and *recommended* way to import all dependencies necessary for SDN+OGM. 
+      Also make sure Neo4j-OGM is at least >= 3.2.11 or you declare a manual version for it's dependency https://github.com/classgraph/classgraph/[ClassGraph] >= *4.8.69*.
+      See https://github.com/classgraph/classgraph/issues/414[issue 414].
 
-This guide https://openliberty.io/guides/maven-intro.html[Building a web application with Maven] shows how to build a simple Web Application targed on Liberty. Neo4j-OGM doesn not work in that scenario, as `mvn liberty:dev` creates a state of Liberty where the application and domain classes end up in `WEB-INF/classes`.
+== SDN CDI Config
 
-This is not a problem per se and also supported https://github.com/classgraph/classgraph[ClassGraph],
-the underlying scanner used to find classes.
+This the required configuration for Spring Data Neo4j in a CDI environment:
 
-However, the `liberty:dev` goal of https://github.com/OpenLiberty/ci.maven#liberty-maven-plugin[Liberty Maven plugin] and at least IntelliJs deploy to Websphere or Liberty mechanism creates
-this class path entry twice. ClassGraph skips those duplicates and thus doesn't find any Domain Classes.
-Packaging the application with `mvn liberty:package -Dinclude=runnable` doesn't show that behaviour.
+[source,java]
+----
+import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.Produces;
+import javax.inject.Singleton;
 
-WARNING: *TL;DR* you must create an independent Jar artifact with your domain classes.
-This examples puts those together with the Spring Data repositories. The solution proposed here shows a full blown EAR build. Another possiblities would be a simple JAR dependency containing the relevant `@NodeEntities` and just depend on that.
+import org.neo4j.ogm.config.Configuration;
+import org.neo4j.ogm.session.Session;
+import org.neo4j.ogm.session.SessionFactory;
+
+public class Neo4jConfig {
+
+	@Produces
+	@Singleton
+	public SessionFactory createSessionFactory() {
+		SessionFactory sessionFactory = new SessionFactory(
+			new Configuration.Builder().withBasePackages("ac.simons.neo4j.sdn_on_liberty.domain")
+				.uri("bolt://localhost:7687").credentials("neo4j", "secret").build());
+		return sessionFactory;
+	}
+
+	public void close(@Disposes SessionFactory sessionFactory) {
+		sessionFactory.close();
+	}
+
+	@Produces
+	@Singleton
+	public Session createSession(SessionFactory sessionFactory) {
+		return sessionFactory.openSession();
+	}
+}
+----
+
+Note: Liberty seems to require an empty `beans.xml` in `META-INF`.
 
 == Running
 
 [source,shell]
 ----
 docker run --publish=7474:7474 --publish=7687:7687 -e 'NEO4J_AUTH=neo4j/secret'  neo4j:4.0.3 // <.>
-mvn clean install <.>
-mvn -pl ac.simons.neo4j:sdn-on-liberty liberty:dev <.>
+mvn liberty:dev <.>
 ----
 <.> Start a Neo4j database
-<.> Build all modules
-<.> Start the EAR module on a dev server.
+<.> Start liberty in dev mode.
 
-Goto the Neo4j browswer and play the first step of the movies graph: http://localhost:7474/browser/?cmd=play&arg=movies[`:play movies`].
-Then access the rest API on your libery like this
+Goto the Neo4j browser and play the first step of the movies graph: http://localhost:7474/browser/?cmd=play&arg=movies[`:play movies`].
+Then access the rest API on your liberty like this
 
 [source,shell]
 ----

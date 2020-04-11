@@ -5,9 +5,12 @@ This repository contains a couple of examples how to use Spring Data Neo4j with 
 The recommended way is to use Spring Boot and it's https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-jersey[JAX-RS and Jersey support].
 You'll find this in the subfolder https://github.com/michael-simons/neo4j-sdn-ogm-with-jax-rs/tree/master/sdn-with-spring-boot-and-jax-rs[`sdn-with-spring-boot-and-jax-rs`].
 
+If you want to run on Open Liberty or on Websphere Liberty, find the recommended approach in https://github.com/michael-simons/neo4j-sdn-ogm-with-jax-rs/tree/master/sdn-with-spring-boot-and-jax-rs[`sdn-on-liberty`].
+Please have a detailed look at the dependency management tag of the `pom.xml`-file. *It is paramount to use ClassGraph >= 4.8.69*.
+
 One other way is to deploy things as an EAR to Websphere Liberty.
-You'll find this in https://github.com/michael-simons/neo4j-sdn-ogm-with-jax-rs/tree/master/sdn-on-liberty[`sdn-on-liberty`].
-The readme over there explains the reasoning.
+You'll find this in https://github.com/michael-simons/neo4j-sdn-ogm-with-jax-rs/tree/master/sdn-on-liberty-as-ear[`sdn-on-liberty-as-ear`].
+This is an EAR deployment and somewhat over the top.
 
 == Get yourself a Neo4j docker instance
 
@@ -21,7 +24,7 @@ Goto the Neo4j browswer and play the first step of the movies graph: http://loca
 
 == API
 
-The API used and exposed is identical in both scenarios:
+The API used and exposed is identical in all scenarios:
 
 [source,java]
 ----
